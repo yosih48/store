@@ -1,9 +1,9 @@
 <template>
- <v-content>
+
 
      <Cart></Cart>
 
- </v-content>
+
 
     
 

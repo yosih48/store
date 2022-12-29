@@ -1,10 +1,9 @@
 <template>
  
 
-  <v-content>
-    
+  
     <Login></Login>
-  </v-content>
+  
  
 
 </template>

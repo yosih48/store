@@ -1,131 +1,245 @@
 <template>
-  <v-container>
-    <v-btn class="mr-12 mb-4">
-      <router-link @click="onClick" to="/">go back</router-link></v-btn
-    >
-    <!-- <v-btn @click="onclick"  class="mr-12 mb-4">click</v-btn> -->
-    <v-simple-table class="tr mr-16" dark>
-      <template v-slot:default>
-        <tbody>
-          <tr height="100px" v-for="item in newcart" :key="item.title">
-            <!-- <tr height="100px"> -->
-            <td>
-              <v-responsive>
-                <v-img
-                  :src="item.src"
-                  aspect-ratio="1"
-                  width="80px"
-                  max-height="80"
-                  class="mx-auto mt-4"
+<!-- <v-main> -->
+
+  <v-container class=" mx-auto  ">
+    <!-- <v-btn class="mr-12 mb-4">
+      <router-link @click="onClick" to="/">go back</router-link></v-btn> -->
+
+      <links v-if="this.userCart.length>0"></links>
+    <h2 class="grey--text mb-7">עגלת קניות</h2>
+    <v-layout v-if="this.userCart.length>0" class="">
+    
+      <v-simple-table class="tr mr-16" dark>
+        <template v-slot:default>
+          <tbody>
+            <!-- <tr height="100px" >  -->
+            <tr height="100px" v-for="(item, index) in userCart" :key="index">
+              <td>
+                <v-responsive>
+                  <v-img
+                    :src="item.src"
+                    aspect-ratio="1"
+                    width="80px"
+                    max-height="80"
+                    class="mx-auto"
+                  >
+                  </v-img>
+                </v-responsive>
+              </td>
+
+              <td class="hover">
+                <router-link
+                  class="white--text"
+                  style="text-decoration: none"
+                  :to="{ name: 'product', params: { id: item.id } }"
+                  >{{ item.title }}</router-link
                 >
-                </v-img>
-              </v-responsive>
-            </td>
-            <td>{{ item.title }}</td>
-            <td>{{ item.price }} ש"ח</td>
-            <td>
-              <v-responsive>
-                <v-select :items="options" v-model="selected"> </v-select>
-              </v-responsive>
-            </td>
-            <td>
-              <v-btn text bottom color=" ">
-                <v-icon small>mdi-delete</v-icon>
-              </v-btn>
-            </td>
-            <td></td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
+              </td>
+              <td>{{ item.price }} ש"ח</td>
+              <td>
+                <v-responsive>
+                  <v-select
+                    v-model="item.quantity"
+                    :items="options"
+                    label="1"
+                    single-line
+                    @change="onChange(index)"
+                  >
+                  </v-select>
+                </v-responsive>
+              </td>
+              <td>
+                <v-btn
+                  text
+                  bottom
+                  color=" "
+                  @click="deleteProductFromCart(index)"
+                >
+                  <v-icon small>mdi-delete</v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+      <v-card
+        dark
+        class="mr-7"
+        max-width="300"
+        min-width="350"
+        max-height="200"
+      >
+        <v-card-text class="center card-text">
+          <v-col>
+            <v-row class="center">
+              <h2>סכום ביניים:</h2>
+            </v-row>
+            <v-row class="mt-11 center">
+              <h2>{{ total }} ש"ח</h2>
+            </v-row>
+          </v-col>
+        </v-card-text>
+        <v-card-actions class="mx-auto center mt-2">
+          <v-btn bottom color="success black--text " width="300">
+            <router-link
+              class="black--text"
+              style="text-decoration: none"
+              to="/shipping"
+              ><span>לתשלום</span></router-link
+            >
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+   
+    </v-layout>
+    <v-layout v-else>
+           <v-btn bottom color="success black--text " width="350" height="40">
+          העגלה שלכם ריקה...  <router-link  style=" color: black;" to="/">חזרה</router-link>
+            
+          </v-btn>
+    </v-layout>
   </v-container>
+  <!-- </v-main>  -->
+
+
 </template>
 
 <script>
-import { eventBus } from "../main";
+import links from "./cartLinks";
 export default {
   name: "cart",
 
   created() {},
-  components: {},
-  props: {
-    source: String,
-    pics: Array,
-
-    cart: Array,
+  components: {
+    links,
   },
+  props: {},
   data() {
     return {
-      items: [
-        {
-          id: 0,
-          title: "Samsung Galaxy S20 PLUS SM-G985F/DS 128GB 8GB RAM סמסונג",
-          src: require("../assets/itemsPics/samsung.jpg"),
-          price: 119.9,
-          description:
-            "מכשיר זה הנו מכשיר חדש ומקורי וכולל עברית מלאה, עדכוני FOTA ו 12 חודשי אחריות.",
-        },
-        {
-          id: 1,
-          title:
-            "מחשב גיימינג Intel i5 10600KF, כ.מסך RTX3070 iChill x4 C30704-08D6X, זכרון 16GB, כונן 1T SSD, לוח BioStar Z490A-Silver ATX - דגם ITS009",
-          src: require("../assets/itemsPics/gaming.jpg"),
-          price: 120,
-        },
-        {
-          id: 2,
-          title: "מצלמת Canon EOS 80D DSLR",
-          src: require("../assets/itemsPics/camera.jpg"),
-          price: 8415,
-        },
-        {
-          id: 3,
-          title: "מושב גיימרים Dragon Olympus Chair",
-          src: require("../assets/itemsPics/chair.jpg"),
-          price: 7415,
-        },
-        {
-          id: 4,
-          title: "Sony PlayStation 5 825GB Blu-ray סוני",
-          src: require("../assets/itemsPics/playstation.jpg"),
-          price: 6815,
-        },
-        {
-          id: 5,
-          title: "מצלמת Canon EOS 80D DSLR",
-          src: require("../assets/itemsPics/camera.jpg"),
-          price: 5415,
-        },
-      ],
-      selected: "",
+      select: null,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
-      newcart: [],
-      car: [],
+
+      totalOriginalPrice: [],
+      priceAfterSelected: [0],
+      total: [],
+
+      userCart: [],
     };
   },
-  computed: {},
-  created() {
-    eventBus.$on("insertToCart", (data) => {
-      this.newcart = data;
-      console.log(this.newcart);
-      // this.title = data
-      // console.log(data)
-    });
-  },
 
-  mounted() {},
+  created() {},
+
+  mounted() {
+
+    this.getCart();
+  },
+  computed: {
+
+    client() {
+      return this.$store.state.client;
+    },
+    items() {
+      return this.$store.state.items;
+    },
+  },
 
   methods: {
-    // onclick(){
-    //   // this.car = this.items
-    //   console.log(this.newcart)
-    // }
+    getCart() {
+       
+      fetch(`http://localhost:5000/cart/${this.client}`)
+        .then((response) => response.json())
+        .then((data) => {
+          this.userCart = data;
+
+          console.log(this.userCart);
+          for (let i = 0; i < this.userCart.length; i++) {
+            // this.userCart[i].src = this.$store.state.items[i].src;
+          }
+
+          this.totalOriginalPrice = this.userCart.reduce(
+            // this.total = this.userCart.reduce(
+            (currentTotal, item) => {
+              return item.newprice + currentTotal;
+            },
+            0
+          );
+
+          this.total = this.totalOriginalPrice;
+        });
+    },
+
+    onChange(index) {
+      for (let i = 0; i < this.userCart.length; i++) {
+        this.select = this.userCart[i].quantity;
+        this.userCart[i].newprice = this.userCart[i].price * this.select;
+      }
+
+      this.priceAfterSelected = this.userCart.reduce((currentTotal, item) => {
+        return item.newprice + currentTotal;
+      }, 0);
+
+      this.total = this.priceAfterSelected;
+      this.updateCart(index);
+      // this.getCart();
+    },
+    updateCart(index) {
+      console.log(index);
+      console.log(this.userCart[index].id);
+      fetch(`http://localhost:5000/cart/`, {
+        method: "put",
+        body: JSON.stringify({
+          id: this.userCart[index].id,
+          clientID: this.client,
+          itemID: this.userCart[index].itemID,
+          quantity: this.userCart[index].quantity,
+          newprice: this.userCart[index].price * this.userCart[index].quantity,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => response.json())
+        .then((jsonObject) => {});
+    },
+
+    deleteProductFromCart(index) {
+   
+   
+      fetch(`http://localhost:5000/cart/${this.userCart[index].id}`, {
+        method: "delete",
+   
+      })
+        .then((response) => response.json())
+        .then((jsonObject) => {
+          this.getCart();
+        });
+    },
   },
+
+  watch: {},
 };
 </script>
 
 <style>
+.container {
+  width: 1200px;
+}
+
 .tr {
   width: 800px;
+}
+
+.card-text {
+  border-bottom: 1px solid black;
+  height: 130px;
+}
+
+.card-action {
+  justify-content: center;
+  align-items: center;
+}
+
+.hover:hover {
+  text-decoration-line: underline;
 }
 </style>

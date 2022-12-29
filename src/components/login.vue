@@ -1,218 +1,270 @@
 <template>
- 
-  <v-content>
-    <v-btn class="mr-12 mb-4">  <router-link @click="onClick" to="/">go back</router-link></v-btn>
+  <v-app id="inspire">
+    <!-- <v-main>
+      <v-container fluid fill-height>
+        <v-layout align-center justify-center>
+          <v-flex xs12 sm8 md4>
+            <v-card class="elevation-12">
+              <v-toolbar dark color="primary">
+                <v-toolbar-title>Login form</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <v-form>
+                  <v-text-field
+                    name="email"
+                    label="email"
+                    type="email"
+                    v-model="email"
+                  ></v-text-field>
+                  <v-text-field
+                    id="password"
+                    name="password"
+                    label="Password"
+                    type="password"
+                    v-model="password"
+                  ></v-text-field>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+    
+                <v-btn color="success" @click="login"> התחבר</v-btn>
+                <v-spacer></v-spacer>
+   <v-row >
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="290"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+         הירשם
+        </v-btn>
+      </template>
+     <v-card>
+        <v-card-title>
+          <span class="text-h5">User Profile</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+             
+              >
+                <v-text-field
+                  label="user name"
+                  v-model="usernamea"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  label="Email*"
+          v-model="emaila"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  label="Password*"
+                  type="password"
+                    v-model="passworda"
+                  required
+                ></v-text-field>
+              </v-col>
+         
+            </v-row>
+          </v-container>
+          <small>*indicates required field</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="dialog = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="register(); dialog = false"
+  
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-main> -->
+
+    <v-main class="all">
+<v-layout align-center justify-center>
+  <v-flex xs12 sm8 md10>
+<div>
+  <h2 class="grey--text mb-4">כניסה</h2>
+  <v-subheader class="grey--text subtitle-1 ">כתובת דואר אלקטרוני</v-subheader>
+      <v-text-field
+      class="input-style "
+      :rules="emailRules"
+      full-width
+      filled
+      color="white"
+      single-line
+      v-model="email"
+        label="דואל"
+        type="email"
+      dense
+      solo
+        background-color="white"
+       
+      ></v-text-field>
+      <v-subheader class="grey--text subtitle-1">סיסמה</v-subheader>
+      <v-text-field
+      :type="show1 ? 'text' : 'password'"
+      @click:append="show1 = !show1"
+      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+       :rules="passwordRules"
+         
+      class="input-style "
+      color="white"
+      
+      full-width
+      light
+      filled
+      dense
+      solo
+      background-color="white"
+      single-line
+      v-model="password"
+        label="סיסמה"
+    
+      ></v-text-field>
+      <v-btn color="success" @click="login"> התחבר</v-btn>
+      
+      <p class="grey--text subtitle-1 mt-4">עדיין לא רשום? <router-link  style="text-decoration: none; color: white;" to="/register">הרשמה</router-link></p>
+   
+   
+  </div>
+
+</v-flex>
+</v-layout>
+
+    </v-main>
+   
+  </v-app>
    
 
-  <v-dialog v-model="dialog"  max-width="600px" min-width="360px">
-    <div>
-      <v-tabs
-        v-model="tab"
-        show-arrows
-        background-color="deep-purple accent-4"
-        icons-and-text
-        dark
-        grow
-      >
-        <v-tabs-slider color="purple darken-4"></v-tabs-slider>
-        <v-tab v-for="i in tabs" :key="i">
-          <v-icon large>{{ i.icon }}</v-icon>
-          <div class="caption py-1">{{ i.name }}</div>
-        </v-tab>
-        <v-tab-item>
-          <v-card class="px-4">
-            <v-card-text>
-              <v-form ref="loginForm" v-model="valid" lazy-validation>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="loginEmail"
-                      :rules="loginEmailRules"
-                      label="E-mail"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="loginPassword"
-                      :append-icon="show1 ? 'eye' : 'eye-off'"
-                      :rules="[rules.required, rules.min]"
-                      :type="show1 ? 'text' : 'password'"
-                      name="input-10-1"
-                      label="Password"
-                      hint="At least 8 characters"
-                      counter
-                      @click:append="show1 = !show1"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col class="d-flex" cols="12" sm="6" xsm="12"> </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col class="d-flex" cols="12" sm="3" xsm="12" align-end>
-                    <v-btn
-                      x-large
-                      block
-                      :disabled="!valid"
-                      color="success"
-                      @click="validate"
-                    >
-                      Login
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item>
-          <v-card class="px-4">
-            <v-card-text>
-              <v-form ref="registerForm" v-model="valid" lazy-validation>
-                <v-row>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      v-model="firstName"
-                      :rules="[rules.required]"
-                      label="First Name"
-                      maxlength="20"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      v-model="lastName"
-                      :rules="[rules.required]"
-                      label="Last Name"
-                      maxlength="20"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="email"
-                      :rules="emailRules"
-                      label="E-mail"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="password"
-                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      :rules="[rules.required, rules.min]"
-                      :type="show1 ? 'text' : 'password'"
-                      name="input-10-1"
-                      label="Password"
-                      hint="At least 8 characters"
-                      counter
-                      @click:append="show1 = !show1"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      block
-                      v-model="verify"
-                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      :rules="[rules.required, passwordMatch]"
-                      :type="show1 ? 'text' : 'password'"
-                      name="input-10-1"
-                      label="Confirm Password"
-                      counter
-                      @click:append="show1 = !show1"
-                    ></v-text-field>
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col class="d-flex ml-auto" cols="12" sm="3" xsm="12">
-                    <v-btn
-                      x-large
-                      block
-                      :disabled="!valid"
-                      color="success"
-                      @click="validate"
-                      >Register</v-btn
-                    >
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-      </v-tabs>
-    </div>
-  </v-dialog>
-  </v-content>
- 
 </template>
 
+
 <script>
-
-
-import button from "./goback"
 export default {
   name: "login",
-
-components:{
-button,
-},
-
   props: {
-    // source: String,
+    source: String,
   },
-
   data() {
     return {
-      dialog: true,
-      tab: 0,
-      tabs: [
-        { name: "Login", icon: "mdi-account" },
-        { name: "Register", icon: "mdi-account-outline" },
+      show1: false,
+       emailRules: [
+        v => !!v || 'Email is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
       ],
-      valid: true,
+         passwordRules: [
+        v => !!v || 'Password is required',
+        v => (v && v.length >= 4) || 'Password must be at least 4 characters'
+      ],
+        password: 'Password',
+        // rules: {
+        //   required: value => !!value || 'חובה',
+        //   // min: v => v.length >= 8 || 'Min 8 characters',
+     
+        // },
 
-      firstName: "",
-      lastName: "",
+      // dialog: false,
+        username:"",
       email: "",
       password: "",
-      verify: "",
-      loginPassword: "",
-      loginEmail: "",
-      loginEmailRules: [
-        (v) => !!v || "Required",
-        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-      ],
-      emailRules: [
-        (v) => !!v || "Required",
-        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-      ],
-
-      show1: false,
-      rules: {
-        required: (value) => !!value || "Required.",
-        min: (v) => (v && v.length >= 8) || "Min 8 characters",
-      },
+ 
+      access: false,
+     
+      userID : null,
+   
     };
   },
-  computed: {
-    passwordMatch() {
-      return () => this.password === this.verify || "Password must match";
+
+  mounted() {
+    this.getUsers();
+  },
+
+  methods: {
+    login() {
+      fetch("http://localhost:5000/clients/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: this.email,
+ password: this.password,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error !== false) {
+            console.log(data);
+            alert("כתובת מייל או סיסמה לא נכונים");
+          } else {
+            console.log("no error");
+            this.userID = data.id
+            this.$store.state.client= data.id
+      location.href = "http://localhost:8080/#/";
+       
+          }
+        });
+    },
+
+
+    getUsers() {
+      fetch("http://localhost:5000/clients/register")
+        .then((response) => response.json())
+        .then((data) => {
+          this.$store.state.users = data;
+          console.log(this.users);
+        });
     },
   },
-  methods: {
-    validate() {
-      if (this.$refs.loginForm.validate()) {
-        // submit form to server/API here...
-      }
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
-    },
+  computed: {
+users(){
+  return  this.$store.state.users
+},
+client(){
+  return  this.$store.state.client
+}
   },
 };
 </script>
-<style scoped>
-.nav {
-  width: 700px;
+
+<style>
+.all{
+  background-color: #263238;
 }
+.input-style{
+ 
+width: 500px;
+}
+
 </style>
