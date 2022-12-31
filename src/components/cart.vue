@@ -94,7 +94,7 @@
               style="text-decoration: none"
               to="/shipping"
               ><span>לתשלום</span></router-link
-            >sdsds
+            >
           </v-btn>
         </v-card-actions>
       </v-card>
