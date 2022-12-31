@@ -1,7 +1,7 @@
 <template>
   <div class=" ">
     <v-breadcrumbs large divider :items="items" class="mr-13"> </v-breadcrumbs>
-    <h1>twst</h1>
+
   </div>
 </template>
 
